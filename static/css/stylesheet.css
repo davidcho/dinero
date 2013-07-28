@@ -1,11 +1,35 @@
+/********************************
+	 Makes the stick footer 
+********************************/
+div#wrap {
+    min-height: 100%;
+}
+
+div#main {
+    overflow:auto;
+    padding-bottom: 20px;
+}  /* must be same height as the footer */
+
+div#footer {
+    position: relative;
+    margin-top: -20px; /* negative value of footer height */
+    height: 20px;
+    clear:both;
+    text-align: center;
+    color: gray;
+    font-family: Helvetica;
+    font-size: 12px;
+} 
+
+
 html, body{
+	height: 100%;
 	padding:0;
 	margin:0;
 	position:relative;
 	color:#fff;
 	letter-spacing:1px !important;
 	font-family:Georgia, "Times New Roman", Times, serif !important; 
-
 }
 
 #container{
@@ -77,4 +101,86 @@ table {
 .zebra tr {
 	background:#000;
 	color:#fff;
+}
+
+
+
+img#background {
+    position: fixed;
+    opacity: 0.3;
+    z-index: -1;
+}
+#title {
+    font-size: 30px;
+    text-align: center;
+    margin-top: -15px;
+    padding: 10px;
+}
+#container-wrap {
+    background-color: rgba(105, 105, 105, 0.3);
+    width: 672px;
+    height: 410px;
+    margin: auto;
+}
+form#inputs {
+    border: 1px solid blue;
+    height: 30px;
+    margin-bottom: 10px;
+}
+input {
+    font-family: Helvetica;
+    font-size: 17px !important;
+    opacity: 0.85;
+    text-align: center;
+    /*position: relative !important;*/
+    float: left !important;
+    margin-left: 6%;
+}
+th:nth-child(1) {
+    width: 60px;
+}
+th:nth-child(2) {
+    width: 300px;
+}
+th:nth-child(3), th:nth-child(4) {
+    width: 150px;
+}
+td:nth-child(1) {
+    width: 59px;
+}
+td:nth-child(2) {
+    width: 299px;
+}
+td:nth-child(3), td:nth-child(4) {
+    width: 150px;
+}
+tbody {
+    display: block;
+    height: 285px;
+    overflow-y: scroll;
+}
+
+form {
+    margin: auto;
+    margin-top: 20px;
+    width: 732px;
+    height: 42px;
+    border: 1px solid gray;
+    background-color: rgba(0, 0, 0, 0.7);
+}
+.form-control {
+    margin: 10px;
+    width: 200px;
+    position: relative;
+    float: left;
+}
+input#add {
+    margin: 10px;
+    width: 50px;
+    position: relative;
+    float: left;
+    padding: 3px;
+}
+input {
+    margin-top: 4px !important;
 }
