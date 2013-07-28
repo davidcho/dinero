@@ -1,0 +1,403 @@
+<!DOCTYPE HTML>
+    <html>
+        <head>
+            <title>Dinero</title>
+            <meta name="author" content="David Cho">
+            <meta name="description" content="database to track of foreign currency">    
+            <link href="/static/css/bootstrap.css" rel="stylesheet" media="screen">
+            <link href="/static/css/stylesheet.css"rel="stylesheet" type="text/css">
+            <script src="/static/js/jquery-1.8.2.js"></script>
+
+            <style>
+                /* Makes the footer nicely */
+                html, body {
+                    height: 100%;
+                }
+
+                div#wrap {
+                    min-height: 100%;
+                }
+
+                div#main {
+                    overflow:auto;
+                    padding-bottom: 20px;
+                }  /* must be same height as the footer */
+
+                div#footer {
+                    position: relative;
+                    margin-top: -20px; /* negative value of footer height */
+                    height: 20px;
+                    clear:both;
+                } 
+                img#background {
+                    position: fixed;
+                    opacity: 0.3;
+                    z-index: -1;
+                }
+                #title {
+                    font-size: 30px;
+                    text-align: center;
+                    margin-top: -15px;
+                    padding: 10px;
+                }
+                #container-wrap {
+                    background-color: rgba(105, 105, 105, 0.3);
+                    width: 672px;
+                    height: 410px;
+                    margin: auto;
+                }
+                form#inputs {
+                    border: 1px solid blue;
+                    height: 30px;
+                    margin-bottom: 10px;
+                }
+                input {
+                    font-family: Helvetica;
+                    font-size: 17px !important;
+                    opacity: 0.85;
+                    text-align: center;
+                    /*position: relative !important;*/
+                    float: left !important;
+                    margin-left: 6%;
+                }
+                input:nth-child(1) {
+                    width: 200px;
+                    margin-left: 14%;
+                }
+                input:nth-child(2) {
+                    width: 150px;
+                }
+                input:nth-child(3) {
+                    width: 150px;
+                }
+                input:nth-child(4) {
+                    width: 40px;
+                }
+                th:nth-child(1) {
+                    width: 60px;
+                }
+                th:nth-child(2) {
+                    width: 300px;
+                }
+                th:nth-child(3), th:nth-child(4) {
+                    width: 150px;
+                }
+                td:nth-child(1) {
+                    width: 59px;
+                }
+                td:nth-child(2) {
+                    width: 299px;
+                }
+                td:nth-child(3), td:nth-child(4) {
+                    width: 150px;
+                }
+                tbody {
+                    display: block;
+                    height: 285px;
+                    overflow-y: scroll;
+                }
+                /*#header-container {
+                    height: 45px;
+                    background-color: rgba(0, 0, 0, 0.2);
+                }
+                #title {
+                    color: red;
+                    font-size: 30px;
+                    text-align: center;
+                }
+                #form-container {
+                    height: 40px;
+                    background-color: rgba(255, 255, 255, 0.2);
+                    border: 1px solid blue;
+                }*/
+                /*input {
+                    position: relative;
+                    float: left;
+                }*/
+                /*#main-container {
+                    height: 350px;
+                    background-color: rgba(255, 255, 255, 0.2);
+                    border: 1px solid blue;
+                }*/
+                /*
+                .input {
+                    position: relative;
+                    float: left;  
+                    margin-right: 35px; 
+                    margin-top: 15px;
+                }
+                .input:nth-child(1) {
+                    margin-left: 25px;
+                }
+                .input:nth-child(3) {
+                    margin-right: 0px;
+                }
+                .text {
+                    position: relative;
+                    float: left;
+                    font-size: 25px;
+                    margin-right: 8px;
+                    margin-top: 6px;
+                }
+                 Change the look of the input forms 
+                input[type="text"] {
+                  background-color: #afafaf;
+                  padding: 6px 4px 4px 4px;
+                  font-size: 18px;
+                  color: #ffffff;
+                  border: 1px solid #ccc;
+                }
+*/
+
+                
+                
+/*
+                #add {
+                    margin-top: 13px;
+                    margin-left: 28px;
+                }
+                span {
+                    font-size: 20px;
+                }*/
+            </style>
+
+            <script>
+                $(document).ready(function() {
+                    var count = 1;
+                    $('#add').click(function() {
+                        var currency = $('#currency').val();
+                        var denom = $('#denom').val();
+                        var quantity = $('#quantity').val();
+                        var letters = /^[A-Za-z]+$/;
+                        var numbers = /^[0-9]+$/;
+
+                        if (currency == '')
+                            toError('#group1', '#currency', 'Input currency');
+                        else if (!letters.test(currency))
+                            toError('#group1', '#currency', 'Invalid currency');
+                        else
+                            toInfo('#group1');
+
+                        if (denom == '')
+                            toError('#group2', '#denom', '#');
+                        else if (!numbers.test(denom))
+                            toError('#group2', '#denom', 'Invalid');
+                        else
+                            toInfo('#group2');        
+
+                        if (quantity == '')
+                            toError('#group3', '#quantity', '#');
+                        else if (!numbers.test(quantity))
+                            toError('#group3', '#quantity', 'Invalid');
+                        else
+                            toInfo('#group3');        
+
+                        if ($('#group1').hasClass('info') && $('#group2').hasClass('info') 
+                            && $('#group3').hasClass('info')) {
+                            // add to text and table
+                            alert('all valid');
+                        }            
+
+                    });
+                });
+                function toError(id, text_id, text) {
+                    var $start = $(id);
+                    $start.removeClass("info");
+                    $start.addClass("error");
+                    $(text_id).val('');
+                    $(text_id).attr("placeholder", text);
+                }
+                function toInfo(id) {
+                    var $start = $(id);
+                    $start.removeClass("error");
+                    $start.addClass("info");
+                }
+            </script>
+        </head>
+        <body>
+            <img src="/static/images/map.jpg" id="background">
+            
+            <div id="wrap">
+                <div id="main">
+                    <div id="container-wrap">
+                        <div id="container">
+                            <div id="title">
+                                Foreign Currency Database
+                            </div>
+                               <!--  <form id="inputs">
+                                    <input type="text" class="form-control input-small" placeholder="Country">
+                                    <input type="text" class="form-control input-small" placeholder="Denomination">
+                                    <input type="text" class="form-control input-small" placeholder="Quantity">
+                                    <input type="submit" class="btn btn-small" value="">
+                                </form> -->
+                            <table class="zebra">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Country</th>
+                                        <th>Denomination</th>
+                                        <th>Quantity</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                            <table class="zebra">
+                                <tbody>
+                                    {% for entry in entries %}
+                                    <tr>
+                                        <td>{{forloop.counter}}</td>
+                                        <td>{{entry.country}}</td>
+                                        <td>{{entry.denomination}}</td>
+                                        <td>{{entry.quantity}}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                                <!-- <tbody>
+                                    <tr>
+                                        <td>02.06.2010</td>
+                                        <td>10:00</td>
+                                        <td>12:00</td>
+                                        <td>Cleaning</td>
+                                    </tr>
+                                    <tr>
+                                        <td>02.06.2010</td>
+                                        <td>12:00</td>
+                                        <td>15:00</td>
+                                        <td>Training</td>
+                                    </tr>
+                                    <tr>
+                                        <td>02.06.2010</td>
+                                        <td>15:00</td>
+                                        <td>17:00</td>
+                                        <td>Rest</td>
+                                    </tr>
+                                    <tr>
+                                        <td>02.06.2010</td>
+                                        <td>17:00</td>
+                                        <td>21:00</td>
+                                        <td>Work</td>
+                                    </tr>
+                                    <tr>
+                                        <td>02.06.2010</td>
+                                        <td>21:00</td>
+                                        <td>07:00</td>
+                                        <td>Sleep</td>
+                                    </tr>
+                                    <tr>
+                                        <td>02.06.2010</td>
+                                        <td>21:00</td>
+                                        <td>07:00</td>
+                                        <td>Sleep</td>
+                                    </tr>
+                                    <tr>
+                                        <td>02.06.2010</td>
+                                        <td>21:00</td>
+                                        <td>07:00</td>
+                                        <td>Sleep</td>
+                                    </tr>
+                                    <tr>
+                                        <td>02.06.2010</td>
+                                        <td>21:00</td>
+                                        <td>07:00</td>
+                                        <td>Sleep</td>
+                                    </tr> -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- <div id="container">
+                        <div id="header-container">
+                            <p id="title">Foreign Currency Database</p>
+                        </div>
+                        <div id="form-container">
+                            <form>
+                                <div class="input control-group" id="group1">
+                                    <label class="text control-label"><span>Currency</span></label>
+                                    <input type="text" class="input-small" id="currency">
+                                </div>
+                                <div class="input control-group col-lg-5">
+                                    <label class="text control-label"><span>Country</span></label>
+                                    <div class=" pull-right col-lg-3">
+                                    <input type="text" class="form-control input-small">
+                                    </div>
+                                </div>
+                                <div class="input control-group">
+                                    <label class="text control-label"><span>Denomination</span></label>
+                                    <div class="col-lg-3 pull-right">
+                                    <input type="text" class="form-control input-small">
+                                    </div>
+                                </div>
+                                <div class="input control-group">
+                                    <label class="text control-label"><span>Quantity</span></label>
+                                    <div class="col-lg-3 pull-right">
+                                    <input type="text" class="form-control input-small">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div> -->
+                </div>
+
+            </div>
+
+            <div id="footer">
+                <p>Designed and built by David Cho</p>
+            </div>
+
+            <!-- <img src="/static/images/map.jpg" id="background"/>
+            <div id="wrap">
+                <div id="main">
+                    <div id="container">
+                        <div id="header-container">
+                            <p id="foreign" class="text-info">Foreign Currency Database</p>
+                        </div>
+                        <div id="main-container">
+                            <div class="input control-group info" id="group1">
+                                <label class="text control-label"><span>Currency</span></label>
+                                <input type="text" class="input-medium" id="currency">
+                            </div>
+                            <div class="input control-group info" id="group2">
+                                <label class="text control-label"><span>Denomination</span></label>
+                                <input type="text" class="input-mini" id="denom">
+                            </div>
+                            <div class="input control-group info" id="group3">
+                                <label class="text control-label"><span>Quantity</span></label>
+                                <input type="text" class="input-mini" id="quantity">
+                            </div>
+                            <button id="add" class="btn btn-primary"><span>+<span></button>
+
+                            <table class="table table-hover" id="table">
+                                <thead>
+                                    <tr class="lead">
+                                        <th>#</th>
+                                        <th>Country</th>
+                                        <th>Denomination</th>
+                                        <th>Quantity</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                            <table class="table table-hover table-condensed" id="table">
+                                <tbody class="lead text-info">
+                                    {% for entry in entries %}
+                                    <tr>
+                                        <td>{{forloop.counter}}</td>
+                                        <td>{{entry.country}}</td>
+                                        <td>{{entry.denomination}}</td>
+                                        <td>{{entry.quantity}}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            
+
+            <div id="footer">
+                <p class="text-info">Designed and built by David Cho</p>
+            </div> -->
+<script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
+        </body>
+    </html>
