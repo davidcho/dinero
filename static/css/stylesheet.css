@@ -163,7 +163,7 @@ tbody {
 form {
     margin: auto;
     margin-top: 20px;
-    width: 732px;
+    width: 722px;
     height: 42px;
     border: 1px solid gray;
     background-color: rgba(0, 0, 0, 0.7);
@@ -176,7 +176,7 @@ form {
 }
 input#add {
     margin: 10px;
-    width: 50px;
+    width: 40px;
     position: relative;
     float: left;
     padding: 3px;
