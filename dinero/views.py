@@ -3,7 +3,7 @@ from entry.models import Entry
 import re
 
 def home(request):
-	parse()
+	# parse()
 	entries = Entry.objects.all().order_by('country', 'denomination')
 	return render(request, 'home.html', {
 		'entries' : entries,

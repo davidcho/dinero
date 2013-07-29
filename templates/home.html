@@ -9,56 +9,46 @@
             <script src="/static/js/jquery-1.8.2.js"></script>
 
             <script>
-                $(document).ready(function() {
-                    $('#add').click(function() {
-                        var currency = $('#currency').val();
-                        var denom = $('#denom').val();
-                        var quantity = $('#quantity').val();
-                        
-
-                        var letters = /^[A-Za-z]+$/;
-                        var numbers = /^[0-9]+$/;
-
-                        if (currency == '')
-                            toError('#group1', '#currency', 'Input currency');
-                        else if (!letters.test(currency))
-                            toError('#group1', '#currency', 'Invalid currency');
-                        else
-                            toInfo('#group1');
-
-                        if (denom == '')
-                            toError('#group2', '#denom', '#');
-                        else if (!numbers.test(denom))
-                            toError('#group2', '#denom', 'Invalid');
-                        else
-                            toInfo('#group2');        
-
-                        if (quantity == '')
-                            toError('#group3', '#quantity', '#');
-                        else if (!numbers.test(quantity))
-                            toError('#group3', '#quantity', 'Invalid');
-                        else
-                            toInfo('#group3');        
-
-                        if ($('#group1').hasClass('info') && $('#group2').hasClass('info') 
-                            && $('#group3').hasClass('info')) {
-                            // add to text and table
-                            alert('all valid');
-                        }            
-
-                    });
-                });
-                function toError(id, text_id, text) {
+                function addError(id, text_id, text) {
                     var $start = $(id);
-                    $start.removeClass("info");
-                    $start.addClass("error");
+                    $start.addClass("has-error");
                     $(text_id).val('');
                     $(text_id).attr("placeholder", text);
                 }
-                function toInfo(id) {
+                function removeError(id) {
                     var $start = $(id);
-                    $start.removeClass("error");
-                    $start.addClass("info");
+                    $start.removeClass("has-error");
+                }
+                function validate() {
+                    var currency = $('#currency').val();
+                    var denom = $('#denom').val();
+                    var quantity = $('#quantity').val();
+
+                    var letters = /^[A-Za-z]+$/;
+                    var numbers = /^[0-9]+$/;
+
+                    if (currency == '')
+                        addError('#group1', '#currency', 'Missing currency');
+                    else if (!letters.test(currency))
+                        addError('#group1', '#currency', 'Invalid currency');
+                    else
+                        removeError('#group1');
+
+                    if (denom == '')
+                        addError('#group2', '#denom', 'Missing denom');
+                    else if (!numbers.test(denom))
+                        addError('#group2', '#denom', 'Invalid denom');
+                    else
+                        removeError('#group2');
+                        
+                    if (quantity == '')
+                        addError('#group3', '#quantity', 'Missing quantity')
+                    else if (!numbers.test(quantity))
+                        addError('#group3', '#quantity', 'Invalid quantity')
+                    else
+                        removeError('#group3');
+
+                    return !($('#group1').hasClass('has-error') || $('#group2').hasClass('has-error') || $('#group2').hasClass('has-error'));
                 }
             </script>
         </head>
@@ -105,7 +95,7 @@
                         <div id="group3">
                             <input type="text" id="quantity" class="form-control input-small" placeholder="Quantity">
                         </div>
-                        <input type="submit" class="btn btn-info" value="+" id="add">
+                        <input type="submit" class="btn btn-info" value="+" id="add" onclick="return validate();">
                     </form>
                 </div>
             </div>
