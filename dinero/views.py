@@ -4,9 +4,43 @@ import re
 
 def home(request):
 	# parse()
+	errors = {}
+	if 'submit' in request.POST:
+		# Doing server side validation of the form
+		country = request.POST['country']
+		if not country or not re.match("^\D+$", country):
+			errors['country'] = True
+		else:
+			country = country.title()
+
+		if request.POST['denomination']:
+			try:
+				denom = int(request.POST['denomination'])
+			except ValueError:
+				errors['denom'] = True
+		else:
+			errors['denom'] = True
+
+		if request.POST['quantity']:
+			try:
+				quantity = int(request.POST['quantity'])
+			except ValueError:
+				errors['quantity'] = True
+		else:
+			errors['quantity'] = True
+
+		try:
+			entry = Entry.objects.get(country=country, denomination=denom)
+			entry.quantity += quantity
+			entry.save()
+		except Entry.DoesNotExist:
+			entry = Entry(country=country, denomination=denom, quantity=quantity)
+			entry.save()
+
 	entries = Entry.objects.all().order_by('country', 'denomination')
 	return render(request, 'home.html', {
 		'entries' : entries,
+		'errors' : errors,
 		})
 
 def parse():

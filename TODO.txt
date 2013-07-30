@@ -1,0 +1,8 @@
+1. server side validation for inputs DONE
+2. adding to database DONE
+3. appending to raw text file
+4. deleting entries
+5. search bar
+6. edit raw file manually
+7. log in page
+8. log in validation

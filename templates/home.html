@@ -24,12 +24,12 @@
                     var denom = $('#denom').val();
                     var quantity = $('#quantity').val();
 
-                    var letters = /^[A-Za-z]+$/;
+                    var letters = /[\d]/;
                     var numbers = /^[0-9]+$/;
 
                     if (currency == '')
                         addError('#group1', '#currency', 'Missing currency');
-                    else if (!letters.test(currency))
+                    else if (letters.test(currency))
                         addError('#group1', '#currency', 'Invalid currency');
                     else
                         removeError('#group1');
@@ -56,7 +56,13 @@
             <img src="/static/images/map.jpg" id="background">
             
             <div id="wrap">
-                <div id="main">
+                <div id="main" class="container">
+                    <div id="search-box">
+                        <form id="search-form" action="/search" method="get">
+                            <input type="text" id="s" name="q" value="Search..." onfocus='if (this.value == "Search...") {this.value = ""}' onblur='if (this.value == "") {this.value = "Search...";}'/>
+                            <input type="image" src="/static/images/blank.gif" id="sbutton" />
+                        </form>
+                    </div>
                     <div id="container-wrap">
                         <div id="container">
                             <div id="title">
@@ -85,20 +91,25 @@
                             </table>
                         </div>
                     </div>
-                    <form class="form-inline">
+                    <form id="inputs" class="form-inline" method="post">{% csrf_token %}
                         <div id="group1">
-                            <input type="text" id="currency" class="form-control input-small" placeholder="Currency">
+                            <input type="text" id="currency" class="form-control input-small" placeholder="Currency" name="country" {%if errors.country%}value="Invalid currency"{%endif%}>
                         </div>
                         <div id="group2">
-                            <input type="text" id="denom" class="form-control input-small" placeholder="Denomination">
+                            <input type="text" id="denom" class="form-control input-small" placeholder="Denomination" name="denomination" {%if errors.country%}value="Invalid currency"{%endif%}>
                         </div>
                         <div id="group3">
-                            <input type="text" id="quantity" class="form-control input-small" placeholder="Quantity">
+                            <input type="text" id="quantity" class="form-control input-small" placeholder="Quantity" name="quantity" {%if errors.country%}value="Invalid currency"{%endif%}>
                         </div>
-                        <input type="submit" class="btn btn-info" value="+" id="add" onclick="return validate();">
+                        <input type="submit" class="btn btn-info" value="+" id="add" onclick="return validate();" name="submit">
                     </form>
+
+                    
+                    
                 </div>
             </div>
+
+
 
             <div id="footer">
                 <p>Designed and built by David Cho</p>

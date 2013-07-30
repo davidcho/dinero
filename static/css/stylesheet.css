@@ -1,5 +1,5 @@
 /********************************
-	 Makes the stick footer 
+	      Sticky Footer 
 ********************************/
 div#wrap {
     min-height: 100%;
@@ -8,6 +8,8 @@ div#wrap {
 div#main {
     overflow:auto;
     padding-bottom: 20px;
+    width: 900px;
+
 }  /* must be same height as the footer */
 
 div#footer {
@@ -21,7 +23,6 @@ div#footer {
     font-size: 12px;
 } 
 
-
 html, body{
 	height: 100%;
 	padding:0;
@@ -30,6 +31,70 @@ html, body{
 	color:#fff;
 	letter-spacing:1px !important;
 	font-family:Georgia, "Times New Roman", Times, serif !important; 
+}
+
+/********************************
+ Put the image in the background 
+********************************/
+
+img#background {
+    position: fixed;
+    opacity: 0.3;
+    z-index: -1;
+}
+
+/********************************
+           Search bar
+********************************/
+
+div#search-box {
+    background:url('/static/images/search.jpg') no-repeat scroll center transparent;
+    width: 214px;
+    height: 36px;
+    border-radius: 4px;
+    display:block;
+    float: right;
+    margin-top: 10px;
+}
+form#search-form {
+    display: block;
+    margin:0;
+    height: 36px;
+}
+form#search-form #s {
+    padding: 6px;
+    margin-left: 6px;
+    margin-top: 7px;
+    width: 175px;
+    height: 21px;
+    font-size:12px;
+    vertical-align: top;
+    border:none;
+    background:transparent;
+    opacity: 0.75;
+    font-family: Helvetica;
+}
+form#search-form #sbutton {
+    padding: 0;
+    height: 30px;
+    width: 30px;
+    margin-top: -27px;
+    margin-left: 183px;
+    vertical-align: top;
+    border: none;
+    background: transparent;
+}
+
+/********************************
+             Table 
+********************************/
+
+#container-wrap {
+    background-color: rgba(105, 105, 105, 0.3);
+    width: 672px;
+    height: 410px;
+    margin: auto;
+    margin-top: 55px;
 }
 
 #container{
@@ -43,13 +108,17 @@ html, body{
 	top: 5px;	
 }
 
-table {
+#title {
+    font-size: 30px;
+    text-align: center;
+    margin-top: -15px;
+    padding: 10px;
+}
+
+table.zebra {
     border-collapse: collapse;
     border-spacing: 0;
 	width:100%;
-}
-
-.zebra {
     border-top: 1px solid #555;
     border-bottom: 1px solid #555;
 }
@@ -103,64 +172,41 @@ table {
 	color:#fff;
 }
 
-
-
-img#background {
-    position: fixed;
-    opacity: 0.3;
-    z-index: -1;
-}
-#title {
-    font-size: 30px;
-    text-align: center;
-    margin-top: -15px;
-    padding: 10px;
-}
-#container-wrap {
-    background-color: rgba(105, 105, 105, 0.3);
-    width: 672px;
-    height: 410px;
-    margin: auto;
-}
-form#inputs {
-    border: 1px solid blue;
-    height: 30px;
-    margin-bottom: 10px;
-}
-input {
-    font-family: Helvetica;
-    font-size: 17px !important;
-    opacity: 0.85;
-    text-align: center;
-    /*position: relative !important;*/
-    float: left !important;
-    margin-left: 6%;
-}
 th:nth-child(1) {
     width: 60px;
 }
+
 th:nth-child(2) {
     width: 300px;
 }
+
 th:nth-child(3), th:nth-child(4) {
     width: 150px;
 }
+
 td:nth-child(1) {
     width: 59px;
 }
+
 td:nth-child(2) {
     width: 299px;
 }
+
 td:nth-child(3), td:nth-child(4) {
     width: 150px;
 }
+
 tbody {
     display: block;
     height: 285px;
     overflow-y: scroll;
 }
 
-form {
+/********************************
+     Form for new entry data
+********************************/
+
+form#inputs {
     margin: auto;
     margin-top: 20px;
     width: 722px;
@@ -168,7 +214,17 @@ form {
     border: 1px solid gray;
     background-color: rgba(0, 0, 0, 0.7);
 }
-.form-control {
+
+form#inputs input {
+    font-family: Helvetica;
+    font-size: 17px !important;
+    opacity: 0.85;
+    text-align: center;
+    float: left !important;
+    margin-top: 4px !important;
+}
+
+input.form-control {
     margin: 10px;
     width: 200px;
     position: relative;
@@ -181,6 +237,4 @@ input#add {
     float: left;
     padding: 3px;
 }
-input {
-    margin-top: 4px !important;
-}
+
