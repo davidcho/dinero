@@ -7,8 +7,16 @@
             <link href="/static/css/bootstrap.css" rel="stylesheet" media="screen">
             <link href="/static/css/stylesheet.css"rel="stylesheet" type="text/css">
             <script src="/static/js/jquery-1.8.2.js"></script>
+            <script src="/static/js/bootstrap.js"></script>
 
             <script>
+                $(document).ready(function() {
+                    $('#add').popover({
+                        placement: 'right',
+                        trigger: 'hover'
+                    });
+                });
+
                 function addError(id, text_id, text) {
                     var $start = $(id);
                     $start.addClass("has-error");
@@ -47,6 +55,10 @@
                         addError('#group3', '#quantity', 'Invalid quantity')
                     else
                         removeError('#group3');
+
+                    console.log("1 " + $('#group1').hasClass('has-error'));
+                    console.log("2 " + $('#group2').hasClass('has-error'));
+                    console.log("3 " + $('#group3').hasClass('has-error'));
 
                     return !($('#group1').hasClass('has-error') || $('#group2').hasClass('has-error') || $('#group2').hasClass('has-error'));
                 }
@@ -101,15 +113,33 @@
                         <div id="group3">
                             <input type="text" id="quantity" class="form-control input-small" placeholder="Quantity" name="quantity" {%if errors.country%}value="Invalid currency"{%endif%}>
                         </div>
+                        <!-- <input type="submit" class="btn btn-info" value="+" id="add" onclick="return validate();" name="submit" rel="popover" title="help" data-content="this is help"> -->
                         <input type="submit" class="btn btn-info" value="+" id="add" onclick="return validate();" name="submit">
                     </form>
-
-                    
-                    
+                    <div id="edit">
+                        <a data-toggle="modal" href="#edit-modal" class="btn btn-default btn-small">edit raw file</a>
+                        <div class="modal fade" id="edit-modal">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                        <h4><span id="modal-header">Edit database file</span></h4>
+                                    </div>
+                                    <form method="post">{% csrf_token %}
+                                        <div class="modal-body" id="modal-body">
+                                            <textarea class="form-control" rows="15">{{rawtext}}</textarea>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                            <button type="submit" class="btn btn-primary" name="save-changes">Save changes</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-
-
 
             <div id="footer">
                 <p>Designed and built by David Cho</p>

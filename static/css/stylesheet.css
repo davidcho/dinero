@@ -54,6 +54,7 @@ div#search-box {
     border-radius: 4px;
     display:block;
     float: right;
+    margin-right: 87px;
     margin-top: 10px;
 }
 form#search-form {
@@ -238,3 +239,25 @@ input#add {
     padding: 3px;
 }
 
+/********************************
+          Edit raw file
+********************************/
+
+div#edit {
+    float: right;
+    margin-right: 87px;
+    /*display: none;*/
+}
+
+div#edit-modal {
+    color: black;
+    font-family: Helvetica;
+}
+
+span#modal-header {
+    font-family: Georgia;
+}
+
+div#modal-body textarea {
+    margin-bottom: -17px;
+}

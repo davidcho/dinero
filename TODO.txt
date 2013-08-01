@@ -2,7 +2,9 @@
 2. adding to database DONE
 3. appending to raw text file
 4. deleting entries
+5.0. learn angularjs
 5. search bar
 6. edit raw file manually
 7. log in page
 8. log in validation
+9. make help be a button that triggers popover on click

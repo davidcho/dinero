@@ -29,17 +29,22 @@ def home(request):
 		else:
 			errors['quantity'] = True
 
-		try:
-			entry = Entry.objects.get(country=country, denomination=denom)
-			entry.quantity += quantity
-			entry.save()
-		except Entry.DoesNotExist:
-			entry = Entry(country=country, denomination=denom, quantity=quantity)
-			entry.save()
+		if not errors:
+			try:
+				entry = Entry.objects.get(country=country, denomination=denom)
+				entry.quantity += quantity
+				entry.save()
+			except Entry.DoesNotExist:
+				entry = Entry(country=country, denomination=denom, quantity=quantity)
+				entry.save()
+	elif 'save-changes' in request.POST:
+		# Should read the textfield info and determine what to add/change
+		print 'saving changes now'
 
 	entries = Entry.objects.all().order_by('country', 'denomination')
 	return render(request, 'home.html', {
 		'entries' : entries,
+		'rawtext' : read(),
 		'errors' : errors,
 		})
 
@@ -61,3 +66,9 @@ def parse():
 		except Entry.DoesNotExist:
 			entry = Entry(country=country, denomination=denomination, quantity=quantity)
 			entry.save()
+
+def read():
+	f = open('static/txt/database.txt')
+	string = f.read()
+	f.close()
+	return string
