@@ -4,18 +4,68 @@
             <title>Dinero</title>
             <meta name="author" content="David Cho">
             <meta name="description" content="database to track of foreign currency">    
-            <link href="/static/css/bootstrap.css" rel="stylesheet" media="screen">
+            <link href="/static/css/bootstrap3.css" rel="stylesheet" media="screen">
             <link href="/static/css/stylesheet.css"rel="stylesheet" type="text/css">
             <script src="/static/js/jquery-1.8.2.js"></script>
             <script src="/static/js/bootstrap.js"></script>
             <script src="/static/js/knockout-2.3.0.js"></script>
 
             <script>
+                function Entry(data) {
+                    this.currency = ko.observable(data.currency);
+                    this.denomination = ko.observable(data.denomination);
+                    this.quantity = ko.observable(data.quantity);
+                }
+
                 function ViewModel() {
                     var self = this;
-                    self.currency = ko.observable('');
-                    self.denomination = ko.observable('');
-                    self.quantity = ko.observable('');
+                    self.entries = ko.observableArray([]);
+
+                    self.addOne = function(value) {
+                        return value + 1;
+                    };
+
+                    self.newCurrency = ko.observable('');
+                    self.newDenomination = ko.observable('');
+                    self.newQuantity = ko.observable('');
+                    self.newEntry = ko.computed(function() {
+                        return new Entry(
+                            {
+                                currency : self.newCurrency(),
+                                denomination : self.newDenomination(),
+                                quantity : self.newQuantity()
+                            }
+                        )
+                    });
+
+                    self.validated = ko.computed(function() {
+                        var validate = true;
+                        var letters = /[\d]/;
+                        var numbers = /^[0-9]+$/;
+
+                        validate = self.newCurrency() != '' && 
+                                   self.newDenomination() != '' && 
+                                   self.newQuantity() != '' && 
+                                   !letters.test(self.newCurrency()) && 
+                                   numbers.test(self.newDenomination()) && 
+                                   numbers.test(self.newQuantity());
+                        return validate;
+                    });
+                    // Operations
+                    self.addEntry = function() {
+                        self.entries.push(self.newEntry());
+                        self.newCurrency('');
+                        self.newDenomination('');
+                        self.newQuantity('');
+
+                    };
+
+                    $.getJSON("/entries", function(allData) {
+                        var mappedEntries = $.map(allData, function(data) {
+                            return new Entry(data);
+                        });
+                        self.entries(mappedEntries);
+                    });
                 }
 
                 $(document).ready(function() {
@@ -24,52 +74,6 @@
                         trigger: 'hover'
                     });
                 });
-
-                function addError(id, text_id, text) {
-                    var $start = $(id);
-                    $start.addClass("has-error");
-                    $(text_id).val('');
-                    $(text_id).attr("placeholder", text);
-                }
-                function removeError(id) {
-                    var $start = $(id);
-                    $start.removeClass("has-error");
-                }
-                function validate() {
-                    var currency = $('#currency').val();
-                    var denom = $('#denom').val();
-                    var quantity = $('#quantity').val();
-
-                    var letters = /[\d]/;
-                    var numbers = /^[0-9]+$/;
-
-                    if (currency == '')
-                        addError('#group1', '#currency', 'Missing currency');
-                    else if (letters.test(currency))
-                        addError('#group1', '#currency', 'Invalid currency');
-                    else
-                        removeError('#group1');
-
-                    if (denom == '')
-                        addError('#group2', '#denom', 'Missing denom');
-                    else if (!numbers.test(denom))
-                        addError('#group2', '#denom', 'Invalid denom');
-                    else
-                        removeError('#group2');
-                        
-                    if (quantity == '')
-                        addError('#group3', '#quantity', 'Missing quantity')
-                    else if (!numbers.test(quantity))
-                        addError('#group3', '#quantity', 'Invalid quantity')
-                    else
-                        removeError('#group3');
-
-                    console.log("1 " + $('#group1').hasClass('has-error'));
-                    console.log("2 " + $('#group2').hasClass('has-error'));
-                    console.log("3 " + $('#group3').hasClass('has-error'));
-
-                    return !($('#group1').hasClass('has-error') || $('#group2').hasClass('has-error') || $('#group2').hasClass('has-error'));
-                }
             </script>
         </head>
         <body>
@@ -99,30 +103,30 @@
                                 </thead>
                             </table>
                             <table class="zebra">
-                                <tbody>
-                                    {% for entry in entries %}
-                                    <tr>
-                                        <td>{{forloop.counter}}</td>
-                                        <td>{{entry.country}}</td>
-                                        <td>{{entry.denomination}}</td>
-                                        <td>{{entry.quantity}}</td>
+                                <tbody data-bind="foreach: entries">
+                                     <tr>
+                                        <td><span data-bind="text: $root.addOne($index())"></span></td>
+                                        <td><span data-bind="text: currency"></span></td>
+                                        <td><span data-bind="text: denomination"></span></td>
+                                        <td><span data-bind="text: quantity"></span></td>
                                     </tr>
-                                    {% endfor %}
+                                </tbody>
                             </table>
                         </div>
                     </div>
                     <form id="inputs" class="form-inline" method="post">{% csrf_token %}
                         <div id="group1">
-                            <input type="text" data-bind="value: currency" id="currency" class="form-control input-small" placeholder="Currency" name="country" {%if errors.country%}value="Invalid currency"{%endif%}>
+                            <input type="text" data-bind="value: newCurrency, valueUpdate: 'keyup'" id="currency" class="form-control input-small" placeholder="Currency" name="country" {%if errors.country%}value="Invalid currency"{%endif%}>
                         </div>
                         <div id="group2">
-                            <input type="text" data-bind="value: denomination" id="denom" class="form-control input-small" placeholder="Denomination" name="denomination" {%if errors.country%}value="Invalid currency"{%endif%}>
+                            <input type="text" data-bind="value: newDenomination, valueUpdate: 'keyup'" id="denom" class="form-control input-small" placeholder="Denomination" name="denomination" {%if errors.country%}value="Invalid currency"{%endif%}>
                         </div>
                         <div id="group3">
-                            <input type="text" data-bind="value: quantity" id="quantity" class="form-control input-small" placeholder="Quantity" name="quantity" {%if errors.country%}value="Invalid currency"{%endif%}>
+                            <input type="text" data-bind="value: newQuantity, valueUpdate: 'keyup'" id="quantity" class="form-control input-small" placeholder="Quantity" name="quantity" {%if errors.country%}value="Invalid currency"{%endif%}>
                         </div>
                         <!-- <input type="submit" class="btn btn-info" value="+" id="add" onclick="return validate();" name="submit" rel="popover" title="help" data-content="this is help"> -->
-                        <input type="submit" class="btn btn-info" value="+" id="add" onclick="return validate();" name="submit">
+                        <!-- <input type="submit" class="btn btn-info" value="+" id="add" onclick="return validate();" name="submit"> -->
+                        <button class="btn btn-info" id="add" data-bind="click: addEntry, enable: validated">+</button>
                     </form>
                     <div id="edit">
                         <a data-toggle="modal" href="#edit-modal" class="btn btn-default btn-small">edit raw file</a>
@@ -148,9 +152,9 @@
                     </div>
 
                     <div style="float: left; color: red;">
-                        <p>Currency: <span data-bind="text: currency"></span></p>
-                        <p>Denomination: <span data-bind="text: denomination"></span></p>
-                        <p>Quantity: <span data-bind="text: quantity"></span></p>
+                        <p>Currency: <span data-bind="text: newCurrency"></span></p>
+                        <p>Denomination: <span data-bind="text: newDenomination"></span></p>
+                        <p>Quantity: <span data-bind="text: newQuantity"></span></p>
                     </div>
                 </div>
             </div>

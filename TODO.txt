@@ -8,3 +8,4 @@
 7. log in page
 8. log in validation
 9. make help be a button that triggers popover on click
+10. jquery autocomplete

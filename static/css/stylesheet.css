@@ -231,9 +231,10 @@ input.form-control {
     position: relative;
     float: left;
 }
-input#add {
-    margin: 10px;
-    width: 40px;
+button#add {
+    margin: 5px;
+    width: 35px;
+    height: 30px;
     position: relative;
     float: left;
     padding: 3px;
