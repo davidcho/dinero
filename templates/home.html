@@ -8,8 +8,16 @@
             <link href="/static/css/stylesheet.css"rel="stylesheet" type="text/css">
             <script src="/static/js/jquery-1.8.2.js"></script>
             <script src="/static/js/bootstrap.js"></script>
+            <script src="/static/js/knockout-2.3.0.js"></script>
 
             <script>
+                function ViewModel() {
+                    var self = this;
+                    self.currency = ko.observable('');
+                    self.denomination = ko.observable('');
+                    self.quantity = ko.observable('');
+                }
+
                 $(document).ready(function() {
                     $('#add').popover({
                         placement: 'right',
@@ -105,13 +113,13 @@
                     </div>
                     <form id="inputs" class="form-inline" method="post">{% csrf_token %}
                         <div id="group1">
-                            <input type="text" id="currency" class="form-control input-small" placeholder="Currency" name="country" {%if errors.country%}value="Invalid currency"{%endif%}>
+                            <input type="text" data-bind="value: currency" id="currency" class="form-control input-small" placeholder="Currency" name="country" {%if errors.country%}value="Invalid currency"{%endif%}>
                         </div>
                         <div id="group2">
-                            <input type="text" id="denom" class="form-control input-small" placeholder="Denomination" name="denomination" {%if errors.country%}value="Invalid currency"{%endif%}>
+                            <input type="text" data-bind="value: denomination" id="denom" class="form-control input-small" placeholder="Denomination" name="denomination" {%if errors.country%}value="Invalid currency"{%endif%}>
                         </div>
                         <div id="group3">
-                            <input type="text" id="quantity" class="form-control input-small" placeholder="Quantity" name="quantity" {%if errors.country%}value="Invalid currency"{%endif%}>
+                            <input type="text" data-bind="value: quantity" id="quantity" class="form-control input-small" placeholder="Quantity" name="quantity" {%if errors.country%}value="Invalid currency"{%endif%}>
                         </div>
                         <!-- <input type="submit" class="btn btn-info" value="+" id="add" onclick="return validate();" name="submit" rel="popover" title="help" data-content="this is help"> -->
                         <input type="submit" class="btn btn-info" value="+" id="add" onclick="return validate();" name="submit">
@@ -127,7 +135,7 @@
                                     </div>
                                     <form method="post">{% csrf_token %}
                                         <div class="modal-body" id="modal-body">
-                                            <textarea class="form-control" rows="15">{{rawtext}}</textarea>
+                                            <textarea name="text" class="form-control" rows="15">{{rawtext}}</textarea>
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -138,12 +146,20 @@
                             </div>
                         </div>
                     </div>
+
+                    <div style="float: left; color: red;">
+                        <p>Currency: <span data-bind="text: currency"></span></p>
+                        <p>Denomination: <span data-bind="text: denomination"></span></p>
+                        <p>Quantity: <span data-bind="text: quantity"></span></p>
+                    </div>
                 </div>
             </div>
 
             <div id="footer">
                 <p>Designed and built by David Cho</p>
             </div>
+
+            <script>ko.applyBindings(new ViewModel());</script>
 
 <script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
         </body>

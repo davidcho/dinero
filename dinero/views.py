@@ -40,6 +40,11 @@ def home(request):
 	elif 'save-changes' in request.POST:
 		# Should read the textfield info and determine what to add/change
 		print 'saving changes now'
+		if request.POST.get('text', ''):
+			data = request.POST['text']
+			print data
+		else:
+			print 'nothing'
 
 	entries = Entry.objects.all().order_by('country', 'denomination')
 	return render(request, 'home.html', {
