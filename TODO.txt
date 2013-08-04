@@ -1,11 +1,19 @@
 1. server side validation for inputs DONE
 2. adding to database DONE
-3. appending to raw text file
-4. deleting entries
-5.0. learn angularjs
-5. search bar
-6. edit raw file manually
-7. log in page
-8. log in validation
-9. make help be a button that triggers popover on click
-10. jquery autocomplete
+3 sorting array DONE
+change to title()
+4. appending to raw text file
+5. deleting entries
+6. learn angularjs
+7. search bar
+8. edit raw file manually
+9. log in page
+10. log in validation
+11. make help be a button that triggers popover on click
+12. jquery autocomplete
+
+Server side validation for inputs DONE
+Adding to database DONE
+Sorting array DONE
+Capitalize currency input DONE
+Post to server upon adding

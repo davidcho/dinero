@@ -1,131 +1,123 @@
-Syrian Pounds;50;1
-Malawi Kwacha;200;1
-Philippine Peso;20;1
-Australian Dollar;5;1
-Nepali Rupee;1;1
+Afghan Afghani;10000;1
+Afghan Afghani;1;1
+Afghan Afghani;2;1
 Angola Kwanza;5;1
-Sri Lankan Rupees;20;1
-Egyptian Pound;1;1
-Thai Bhat;50;1
-Mauritian Rupee;25;1
-Pakistani Rupee;10;1
+Antartican Dollar;1;1
+Australian Dollar;5;1
 Bahrain Dinar;1;1
-United States Dollar;1;1
-Ethiopian Birr;1;1
-Zambian Kwacha;500;1
-South Korean Won;1000;1
-Singapore Dollar;2;1
-Qatar Riyal;1;1
-Rwandan Francs;100;1
-Burundian Franc;100;1
-Kenyan Shilling;50;1
-Tanzanian Shilling;500;1
-UAE Dirhams;5;1
-Canadian Dollar;1;1
-South African Rand;10;1
-Indian Rupee;10;1
-Swiss Franc;20;1
-British Pound;5;1
+Bangladesh Taka;2;1
+Bangladesh taka;2;1
+Belarusian Ruble;100;1
+Belarusian Ruble;10;1
+Belarusian Ruble;5;1
 Belize Dollar;2;1
-Hundarian Forint;200;1
-Macau Patacas;20;1
-Malawi Kwacha;500;1
-Chilean Pesos;5000;1
-Guatemalan Quetzal;10;1
+Bhutanese Ngultrum;1;1
+Bosnian Dinara;100;1
+British Pound;5;1
+Brunei Dollar;10;1
 Brunei Dollar;1;1
 Brunei Dollar;5;1
-Ugandan Shilling;5000;1
-Nicaragua Cordobas;10;1
-Nicaragua Cordobas;20;1
-Costa Rican Colones;1000;1
-Guatemalan Quetzal;5;1
-Guatemalan Quetzal;50;1
-Guatemalan Quetzal;1;1
-Nicaragua Cordobas;10;1
-Turkish Lira;5;1
-Polish Zloty;20;1
-West African Francs;1000;1
+Burundi Francs;20;1
+Burundian Franc;100;1
+Cambodian Riel;200;1
 Cambodian Riel;500;1
-Vietnamese Dong;500;1
-Bosnian Dinara;100;1
+Cambodian Riel;50;1
+Cambodian Riel;5;1
+Canadian Dollar;1;1
 Chilean Pesos;10000;1
-Romanian Leu;1;1
-Indonesian Rupiah;2000;1
-Malaysian Ringgit;1;1
-Hong Kong Dollar;10;1
-Chinese Yuan;1;1
-Nepali Rupee;10;1
-Omani Baisa;100;1
-Euro;5;1
+Chilean Pesos;1000;1
+Chilean Pesos;5000;1
 Chinese Yuan Old;1;1
-Myanma Kyat;50;1
-Bhutanese Ngultrum;1;1
+Chinese Yuan;1;1
+Congolese Francs;100;1
+Costa Rican Colones;1000;1
+Croatian Dinara;100000;1
+Croatian Dinara;50000;1
+Cuban Pesos;3;1
+Egyptian Iastres;50;1
+Egyptian Pound;1;1
+Ethiopian Birr;1;1
+Euro;5;1
+Guatemalan Quetzal;10;1
+Guatemalan Quetzal;1;1
+Guatemalan Quetzal;50;1
+Guatemalan Quetzal;5;1
 Guinean Franc;100;1
-Afghan Afghani;10000;1
+Guyanese Dollar;20;1
+Hong Kong Dollar;10;1
+Hundarian Forint;200;1
+Indian Rupee;10;1
+Indonesian Rupiah;10000;1
+Indonesian Rupiah;1000;1
+Indonesian Rupiah;2000;1
+Irani Rial;100;1
+Irani Rial;200;1
+Irania Riyal;10000;1
+Iraqi Dinars;250;1
+Israeli New Shekel;5;1
+Japanese Yen;1000;1
+Kazakistan Tenge;5;1
+Kenyan Shilling;50;1
+Kuwaiti Dinar;1;1
 Kyrgyzstani Som;1;1
 Kyrgyzstani Som;50;1
-Moldovan Leu;1;1
-Bangladesh Taka;2;1
-Tajikistani Somoni;1;1
-Guyanese Dollar;20;1
-Belarusian Ruble;100;1
-Croatian Dinara;100000;1
-Cambodian Riel;5;1
-Uzbekistani Som;5;1
-Israeli New Shekel;5;1
-South Korean Won;1000;1
-Malaysian Ringgit;5;1
-Chilean Pesos;1000;1
-Nigerian Naira;5;1
-Egyptian Iastres;50;1
-Indonesian Rupiah;10000;1
-Macau Pataca;20;1
-Ukrainian Hryvnia;2;1
-Egyptian Pound;1;1
-Nigerian Niara;1000;1
-Vietnamese Dong;200;1
-Vietnamese Dong;1000;1
-Cambodian Riel;50;1
-Cambodian Riel;200;1
-Cambodian Riel;200;1
-Ethiopian Birr;1;1
-Zambian Kwacha;50;1
-Myanma Kyat;1;1
-Myanma Kyat;1;1
-Myanma Kyat;5;1
-Myanma Kyat;10;1
-Indonesian Rupiah;1000;1
-Nepali Rupee;2;1
-Pakistani Rupee;5;1
-Belarusian Ruble;100;1
-Afghan Afghani;2;1
-Afghan Afghani;1;1
-Bangladesh taka;2;1
-Burundi Francs;20;1
-Irani Rial;200;1
-Irani Rial;100;1
-Belarusian Ruble;5;1
-Belarusian Ruble;10;1
-Croatian Dinara;50000;1
-Mongolian Togrog;50;1
-Antartican Dollar;1;1
-North Korean Won;1000;1
 Libyan Dinar;1;1
-Somalian Shilling;5;1
-Kazakistan Tenge;5;1
-Syrian Pound;100;1
-Cuban Pesos;3;1
-Nigerian Naira;10;1
-Irania Riyal;10000;1
-Omani Riyal;1;1
-Iraqi Dinars;250;1
-Congolese Francs;100;1
-South Sudan Pound;1;1
-Japanese Yen;1000;1
+Macau Pataca;20;1
+Macau Patacas;20;1
+Malawi Kwacha;200;1
+Malawi Kwacha;500;1
+Malaysian Ringgit;1;1
+Malaysian Ringgit;5;1
+Mauritian Rupee;25;1
+Moldovan Leu;1;1
+Mongolian Togrog;50;1
+Myanma Kyat;10;1
+Myanma Kyat;1;1
+Myanma Kyat;50;1
+Myanma Kyat;5;1
 Namibian Dollar;20;1
-Brunei Dollar;10;1
-Swedish Krone;20;1
+Nepali Rupee;10;1
+Nepali Rupee;1;1
+Nepali Rupee;2;1
+Nicaragua Cordobas;10;1
+Nicaragua Cordobas;20;1
+Nigerian Naira;10;1
+Nigerian Naira;5;1
+Nigerian Niara;1000;1
+North Korean Won;1000;1
+Omani Baisa;100;1
+Omani Riyal;1;1
+Pakistani Rupee;10;1
+Pakistani Rupee;5;1
 Philipines Peso;20;1
+Philippine Peso;20;1
+Polish Zloty;20;1
+Qatar Riyal;1;1
+Romanian Leu;1;1
+Rwandan Francs;100;1
+Saudi Riyal;5;1Singapore Dollar;2;1
+Somalian Shilling;5;1
+South African Rand;10;1
+South Korean Won;1000;1
+South Sudan Pound;1;1
+Sri Lankan Rupees;20;1
+Swedish Krone;20;1
+Swiss Franc;20;1
+Syrian Pound;100;1
+Syrian Pounds;50;1
+Tajikistani Somoni;1;1
+Tanzanian Shilling;500;1
+Thai Bhat;50;1
+Turkish Lira;5;1
+UAE Dirhams;5;1
+Ugandan Shilling;5000;1
 Ukraine Hyrvnia;5;1
-Kuwaiti Dinar;1;1
-Saudi Riyal;5;1
+Ukrainian Hryvnia;2;1
+United States Dollar;1;1
+Uzbekistani Som;5;1
+Vietnamese Dong;1000;1
+Vietnamese Dong;200;1
+Vietnamese Dong;500;1
+West African Francs;1000;1
+Zambian Kwacha;500;1
+Zambian Kwacha;50;1

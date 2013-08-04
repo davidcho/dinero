@@ -207,7 +207,7 @@ tbody {
      Form for new entry data
 ********************************/
 
-form#inputs {
+div#inputs {
     margin: auto;
     margin-top: 20px;
     width: 722px;
@@ -216,7 +216,7 @@ form#inputs {
     background-color: rgba(0, 0, 0, 0.7);
 }
 
-form#inputs input {
+div#inputs input {
     font-family: Helvetica;
     font-size: 17px !important;
     opacity: 0.85;

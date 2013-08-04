@@ -8,7 +8,8 @@ from dinero import settings
 
 urlpatterns = patterns('',
 	url(r'^$', home),
-    url(r'^entries/$', entries),
+    url(r'^getEntries/$', getEntries),
+    url(r'^newEntry/$', newEntry),
 
     # url(r'^ajaxexample$', main),
     # url(r'^ajaxexample_json$', ajax),

@@ -52,28 +52,44 @@
                         return validate;
                     });
                     // Operations
+                    self.sortEntries = function() {
+                        self.entries.sort(function(A, B) {
+                            if (A.currency() == B.currency())
+                                return A.denomination() < B.denomination() ? -1 : 1;
+                            return A.currency() < B.currency() ? -1 : 1;
+                        })
+                    };
                     self.addEntry = function() {
                         self.entries.push(self.newEntry());
+                        $.ajax({
+                            url : "/newEntry/",
+                            type : "POST",
+                            dataType: "json",
+                            data : {
+                                client_response : ko.toJSON(self.newEntry()),
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                            },
+                            success : function(result) {   
+                                // alert('success');
+                            },
+                            error : function(xhr,errmsg,err) {
+                                // alert(xhr.status + ": " + xhr.responseText);
+                            }
+                        });
+
                         self.newCurrency('');
                         self.newDenomination('');
                         self.newQuantity('');
-
+                        self.sortEntries();
                     };
 
-                    $.getJSON("/entries", function(allData) {
+                    $.getJSON("/getEntries", function(allData) {
                         var mappedEntries = $.map(allData, function(data) {
                             return new Entry(data);
                         });
                         self.entries(mappedEntries);
                     });
                 }
-
-                $(document).ready(function() {
-                    $('#add').popover({
-                        placement: 'right',
-                        trigger: 'hover'
-                    });
-                });
             </script>
         </head>
         <body>
@@ -81,12 +97,14 @@
             
             <div id="wrap">
                 <div id="main" class="container">
+                    <div id="result"></div>
                     <div id="search-box">
                         <form id="search-form" action="/search" method="get">
                             <input type="text" id="s" name="q" value="Search..." onfocus='if (this.value == "Search...") {this.value = ""}' onblur='if (this.value == "") {this.value = "Search...";}'/>
                             <input type="image" src="/static/images/blank.gif" id="sbutton" />
                         </form>
                     </div>
+
                     <div id="container-wrap">
                         <div id="container">
                             <div id="title">
@@ -114,7 +132,8 @@
                             </table>
                         </div>
                     </div>
-                    <form id="inputs" class="form-inline" method="post">{% csrf_token %}
+
+                    <div id="inputs">
                         <div id="group1">
                             <input type="text" data-bind="value: newCurrency, valueUpdate: 'keyup'" id="currency" class="form-control input-small" placeholder="Currency" name="country" {%if errors.country%}value="Invalid currency"{%endif%}>
                         </div>
@@ -124,10 +143,9 @@
                         <div id="group3">
                             <input type="text" data-bind="value: newQuantity, valueUpdate: 'keyup'" id="quantity" class="form-control input-small" placeholder="Quantity" name="quantity" {%if errors.country%}value="Invalid currency"{%endif%}>
                         </div>
-                        <!-- <input type="submit" class="btn btn-info" value="+" id="add" onclick="return validate();" name="submit" rel="popover" title="help" data-content="this is help"> -->
-                        <!-- <input type="submit" class="btn btn-info" value="+" id="add" onclick="return validate();" name="submit"> -->
                         <button class="btn btn-info" id="add" data-bind="click: addEntry, enable: validated">+</button>
-                    </form>
+                    </div>
+
                     <div id="edit">
                         <a data-toggle="modal" href="#edit-modal" class="btn btn-default btn-small">edit raw file</a>
                         <div class="modal fade" id="edit-modal">
