@@ -11,6 +11,21 @@
             <script src="/static/js/knockout-2.3.0.js"></script>
 
             <script>
+                // ko.bindingHandlers.hoverToggle = {
+                //     update: function(element, valueAccessor) {
+                //        var css = valueAccessor();
+
+                //         ko.utils.registerEventHandler(element, "mouseover", function() {
+                //             alert('entered');
+                //             ko.utils.toggleDomNodeCssClass(element, ko.utils.unwrapObservable(css), true);
+                //         });  
+
+                //         ko.utils.registerEventHandler(element, "mouseout", function() {
+                //             alert('left');
+                //             ko.utils.toggleDomNodeCssClass(element, ko.utils.unwrapObservable(css), false);
+                //         });      
+                //     } 
+                // };
                 function Entry(data) {
                     this.currency = ko.observable(data.currency);
                     this.denomination = ko.observable(data.denomination);
@@ -25,32 +40,38 @@
                         return value + 1;
                     };
 
+                    self.capitalize = function(str) {
+                        return str.replace(/\w\S*/g, function(txt) {
+                            return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+                        });
+                    }
+
                     self.newCurrency = ko.observable('');
                     self.newDenomination = ko.observable('');
                     self.newQuantity = ko.observable('');
                     self.newEntry = ko.computed(function() {
                         return new Entry(
                             {
-                                currency : self.newCurrency(),
+                                currency : self.capitalize(self.newCurrency()),
                                 denomination : self.newDenomination(),
                                 quantity : self.newQuantity()
                             }
                         )
                     });
 
+                    // Checks whether all three values are valid
                     self.validated = ko.computed(function() {
-                        var validate = true;
                         var letters = /[\d]/;
                         var numbers = /^[0-9]+$/;
 
-                        validate = self.newCurrency() != '' && 
-                                   self.newDenomination() != '' && 
-                                   self.newQuantity() != '' && 
-                                   !letters.test(self.newCurrency()) && 
-                                   numbers.test(self.newDenomination()) && 
-                                   numbers.test(self.newQuantity());
-                        return validate;
+                        return self.newCurrency() != '' && 
+                                self.newDenomination() != '' && 
+                                self.newQuantity() != '' && 
+                                !letters.test(self.newCurrency()) && 
+                                numbers.test(self.newDenomination()) && 
+                                numbers.test(self.newQuantity());
                     });
+
                     // Operations
                     self.sortEntries = function() {
                         self.entries.sort(function(A, B) {
@@ -59,8 +80,23 @@
                             return A.currency() < B.currency() ? -1 : 1;
                         })
                     };
+                    // Returns an array of objects with the same 
+                    // currency and denomination as the new entry
+                    self.findSame = function() {
+                        return ko.utils.arrayFilter(self.entries(), function(item) {
+                            return item.currency() === self.capitalize(self.newCurrency()) && item.denomination() == self.newDenomination();
+                        });
+                    };
                     self.addEntry = function() {
-                        self.entries.push(self.newEntry());
+                        array = self.findSame();
+                        if (array.length === 1) { 
+                            obj = self.findSame()[0];
+                            obj.quantity(parseInt(self.newEntry().quantity()) + obj.quantity());
+                        } else {
+                            self.entries.push(self.newEntry());
+                            self.sortEntries();
+                        }
+                        
                         $.ajax({
                             url : "/newEntry/",
                             type : "POST",
@@ -80,7 +116,6 @@
                         self.newCurrency('');
                         self.newDenomination('');
                         self.newQuantity('');
-                        self.sortEntries();
                     };
 
                     $.getJSON("/getEntries", function(allData) {
@@ -89,8 +124,45 @@
                         });
                         self.entries(mappedEntries);
                     });
+
+                    self.rawtext = ko.observable();
+
+                    self.getRawtext = function() {
+                        $.ajax({
+                                url : "/allEntries",
+                                type : "GET",
+                                dataType: "json",
+                                data : {
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                            },
+                            success : function(json) {
+                                self.rawtext(json.text);
+                            }
+                        });
+                    };
+
+                    self.rawtext.subscribe(function() {
+                        alert('hi');
+                    });
+
+                    self.update = function() {
+                        $.getJSON("/getEntries", function(allData) {
+                            var mappedEntries = $.map(allData, function(data) {
+                                return new Entry(data);
+                            });
+                            self.entries(mappedEntries);
+                        });
+                    };
                 }
+
+                
             </script>
+
+            <style>
+                div#delete {
+                    margin-right: 12px;
+                }
+            </style>
         </head>
         <body>
             <img src="/static/images/map.jpg" id="background">
@@ -122,8 +194,15 @@
                             </table>
                             <table class="zebra">
                                 <tbody data-bind="foreach: entries">
-                                     <tr>
-                                        <td><span data-bind="text: $root.addOne($index())"></span></td>
+                                     <tr class="rows" ><!-- data-bind="hoverToggle: 'hover'" -->
+                                        <td>
+                                            <!-- <div id="number"> -->
+                                                <span data-bind="text: $root.addOne($index())"></span>
+                                            <!-- </div> -->
+                                            <!-- <div id="delete" style="display: none">
+                                                <button type="button" class="close">&times;</button>
+                                            </div> -->
+                                        </td>
                                         <td><span data-bind="text: currency"></span></td>
                                         <td><span data-bind="text: denomination"></span></td>
                                         <td><span data-bind="text: quantity"></span></td>
@@ -147,7 +226,7 @@
                     </div>
 
                     <div id="edit">
-                        <a data-toggle="modal" href="#edit-modal" class="btn btn-default btn-small">edit raw file</a>
+                        <a data-toggle="modal" href="#edit-modal" class="btn btn-default btn-small" data-bind="click: getRawtext">edit raw file</a>
                         <div class="modal fade" id="edit-modal">
                             <div class="modal-dialog">
                                 <div class="modal-content">
@@ -157,7 +236,7 @@
                                     </div>
                                     <form method="post">{% csrf_token %}
                                         <div class="modal-body" id="modal-body">
-                                            <textarea name="text" class="form-control" rows="15">{{rawtext}}</textarea>
+                                            <textarea name="text" class="form-control" rows="15" data-bind="text: rawtext"></textarea>
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -167,12 +246,6 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-
-                    <div style="float: left; color: red;">
-                        <p>Currency: <span data-bind="text: newCurrency"></span></p>
-                        <p>Denomination: <span data-bind="text: newDenomination"></span></p>
-                        <p>Quantity: <span data-bind="text: newQuantity"></span></p>
                     </div>
                 </div>
             </div>

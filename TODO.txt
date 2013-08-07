@@ -1,7 +1,4 @@
-1. server side validation for inputs DONE
-2. adding to database DONE
-3 sorting array DONE
-change to title()
+
 4. appending to raw text file
 5. deleting entries
 6. learn angularjs
@@ -12,8 +9,15 @@ change to title()
 11. make help be a button that triggers popover on click
 12. jquery autocomplete
 
-Server side validation for inputs DONE
-Adding to database DONE
-Sorting array DONE
-Capitalize currency input DONE
-Post to server upon adding
+1. Server side validation for inputs DONE
+2. Adding to database DONE
+3. Sorting array DONE
+4. Capitalize currency input DONE
+5. Post to server upon adding DONE
+6. Change country to uppercase DONE
+7. Replace old line with new line DONE
+8. Database updates to new quantity DONE
+9. Mutate the object in the observablearray DONE
+10. add X to delete on frontend DONE
+11. show X on hover - [[need to learn custon binding]]
+12. grab raw file upon clicking button

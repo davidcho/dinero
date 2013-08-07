@@ -10,7 +10,7 @@ urlpatterns = patterns('',
 	url(r'^$', home),
     url(r'^getEntries/$', getEntries),
     url(r'^newEntry/$', newEntry),
-
+    url(r'^allEntries/$', allEntries),
     # url(r'^ajaxexample$', main),
     # url(r'^ajaxexample_json$', ajax),
 

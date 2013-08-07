@@ -11,26 +11,66 @@ def home(request):
 		as well as the raw text file associated with it. May
 		also do some cleanup in the database and text file.
 	"""
-	# clearDatabase()
-	# organize()
-	# parse()
-	return render(request, 'home.html', { 'rawtext' : read() })
-	# parse()
-	# errors = {}
-	# if 'submit' in request.POST:
-	# 	# Doing server side validation of the form
-	# 	if not errors:
-	# 		try:
-	# 			country = request.POST['country'].title()
-	# 			denom = int(request.POST['denomination'])
-	# 			quantity = int(request.POST['quantity'])
+	rawtext = rawText()
+	if 'save-changes' in request.POST:
+		if request.POST.get('text', ''):
 
-	# 			entry = Entry.objects.get(country=country, denomination=denom)
-	# 			entry.quantity += quantity
-	# 			entry.save()
-	# 		except Entry.DoesNotExist:
-	# 			entry = Entry(country=country, denomination=denom, quantity=quantity)
-	# 			entry.save()
+			# # Contains new text
+			# new = {x[:-1] for x in request.POST['text'].split('\n')}
+			# # Contains old text
+			# old = {x for x in rawtext.split('\n')}
+
+			# for line in new:
+			# 	print 'new; %s' % line
+
+			# for line in old:
+			# 	print 'old; %s' % line	
+
+			# # Check what is in new but not in old - additions
+			# for line in new:
+			# 	if line not in old:
+			# 		regex = re.compile('(\D+);(\d+);(\d+)')
+			# 		result = regex.match(line)
+			# 		if result:
+			# 			try:
+			# 				country = result.group(1).title()
+			# 				denomination = int(result.group(2))
+			# 				quantity = int(result.group(3))
+			# 				entry = Entry.objects.get(country=country, denomination=denomination)
+			# 				entry.quantity += quantity
+			# 				entry.save()
+			# 			except Entry.DoesNotExist:
+			# 				entry = Entry(country=country, denomination=denomination, quantity=quantity)
+			# 				entry.save()
+			# 			except:
+			# 				pass
+
+			# # Check what is in old but not in new - deletions
+			# for line in old:
+			# 	if line not in new:
+			# 		# print 'deleting %s' % line
+			# 		regex = re.compile('(\D+);(\d+);(\d+)')
+			# 		result = regex.match(line)
+			# 		if result:
+			# 			try:
+			# 				country = result.group(1)
+			# 				denomination = int(result.group(2))
+			# 				quantity = int(result.group(3))
+			# 				entry = Entry.objects.get(country=country, denomination=denomination)
+			# 				entry.delete()
+			# 			except:
+			# 				pass
+
+			# Overwrite text file with new text
+			with open('static/txt/database.txt', 'w') as myfile:
+				myfile.write(request.POST.get('text', ''))
+			
+	# clearDatabase()
+	
+	parse()
+	organize()
+	return render(request, 'home.html')
+
 	# elif 'save-changes' in request.POST:
 	# 	# Should read the textfield info and determine what to add/change
 	# 	print 'saving changes now'
@@ -39,21 +79,16 @@ def home(request):
 	# 	else:
 	# 		print 'nothing'
 
-	
-	# response = []
-	# for entry in entries:
-	# 	obj = {}
-	# 	obj['currency'] = entry.country
-	# 	obj['denomination'] = entry.denomination
-	# 	obj['quantity'] = entry.quantity
-	# 	response.append(obj)
-	# string = json.dumps(response)
-
-	# return render(request, 'home.html', {
-	# 	'entries' : entries,
-	# 	'rawtext' : read(),
-	# 	# 'errors' : errors,
-	# 	})
+# def addEntry(currency, denomination, quantity, text=False):
+# 	try:
+# 		currency = currency.title()
+# 		denomination = int(denomination)
+# 		quantity = int(quantity)
+# 		Entry.objects.get(country=currency, denomination=denomination)
+# 	except Entry.DoesNotExist:
+# 		entry = Entry(country=currency, denomination=denomination, quantity=quantity)	
+# 	except:
+# 		pass
 
 def parse():
 	"""
@@ -69,75 +104,15 @@ def parse():
 					country = result.group(1)
 					denomination = int(result.group(2))
 					quantity = int(result.group(3))
-					Entry.objects.get(country=country, denomination=denomination, quantity=quantity)
+					entry = Entry.objects.get(country=country, denomination=denomination)
+					entry.quantity += quantity
+					entry.save()
 				except Entry.DoesNotExist:
 					entry = Entry(country=country, denomination=denomination, quantity=quantity)
 					entry.save()
 				except:
 					pass
 
-def read():
-	with open('static/txt/database.txt', 'r') as myfile:
-		return myfile.read()
-
-def validate(request):
-	errors = {}
-	country = request.POST['country']
-	if not country or not re.match("^\D+$", country):
-		errors['country'] = True
-
-	if request.POST['denomination']:
-		try:
-			denom = int(request.POST['denomination'])
-		except ValueError:
-			errors['denom'] = True
-	else:
-		errors['denom'] = True
-
-	if request.POST['quantity']:
-		try:
-			quantity = int(request.POST['quantity'])
-		except ValueError:
-			errors['quantity'] = True
-	else:
-		errors['quantity'] = True
-
-	return errors
-
-def getEntries(request):
-	response = []
-	entries = Entry.objects.all().order_by('country', 'denomination')
-	for entry in entries:
-		obj = {}
-		obj['currency'] = entry.country
-		obj['denomination'] = entry.denomination
-		obj['quantity'] = entry.quantity
-		response.append(obj)
-	return HttpResponse(json.dumps(response), content_type="application/json")
-
-def newEntry(request):
-	if request.POST.has_key('client_response'):
-		# Get entry from the client
-		# Validate first!
-		entry = json.loads(request.POST['client_response'])
-		currency = entry['currency']
-		denom = int(entry['denomination'])
-		quantity = int(entry['quantity'])
-		# Write to the database and append to text file
-		try:
-			entry = Entry.objects.get(country=currency, denomination=denom)
-			entry.quantity += quantity
-			entry.save()
-		except Entry.DoesNotExist:
-			entry = Entry(country=currency, denomination=denom, quantity=quantity)
-			entry.save()
-			# check if there is already a newline or not
-			with open('static/txt/database.txt', 'r+a') as myfile:
-				last = myfile.readlines()[-1]
-				print '\n' in last
-			    # myfile.write("\n%s;%s;%s\n" % (currency, denom, quantity))
-		return HttpResponse('success')
-	return HttpResponse('failure')
 
 def clearDatabase():
 	"""
@@ -151,14 +126,100 @@ def organize():
 		Removes duplicates from the text file 
 		and then sorts them alphabetically
 	"""
-	myset = {}
-	with open('static/txt/database.txt', 'r') as myfile:
-		myset = {line for line in myfile}
+	# myset = {}
+	# with open('static/txt/database.txt', 'r') as myfile:
+	# 	myset = {line for line in myfile}
+	# with open('static/txt/database.txt', 'w') as myfile:
+	# 	mylist = list(myset)
+	# 	mylist.sort()
+	# 	for line in mylist:
+	# 		myfile.write(line)
+	entries = Entry.objects.all().order_by('country', 'denomination')
+	for entry in entries:
+		entry.country = entry.country.title()
+		entry.save()
+	entries = Entry.objects.all().order_by('country', 'denomination')
 	with open('static/txt/database.txt', 'w') as myfile:
-		mylist = list(myset)
-		mylist.sort()
-		for line in mylist:
-			myfile.write(line)
+		bufferstring = ''
+		for entry in entries:
+			bufferstring = '%s\n%s;%s;%s' % (bufferstring, entry.country, entry.denomination, entry.quantity)
+		myfile.write(bufferstring)
+
+def getEntries(request):
+	"""
+		Returns the json representation of all the entries in the database.
+	"""	
+	response = []
+	entries = Entry.objects.all().order_by('country', 'denomination')
+	for entry in entries:
+		obj = {}
+		obj['currency'] = entry.country
+		obj['denomination'] = entry.denomination
+		obj['quantity'] = entry.quantity
+		response.append(obj)
+	return HttpResponse(json.dumps(response), content_type="application/json")
+
+def newEntry(request):
+	"""
+		Grabs the information for the new entry, adds 
+		it to the database, and updates the text file.
+	"""
+	if request.POST.has_key('client_response'):
+		# Get entry from the client
+		entry = json.loads(request.POST['client_response'])
+		# Validate first
+		if validates(entry):
+			currency = entry['currency'].title()
+			denom = int(entry['denomination'])
+			quantity = int(entry['quantity'])
+			# Write to the database and append to text file
+			try:
+				entry = Entry.objects.get(country=currency, denomination=denom)
+				entry.quantity += quantity
+				entry.save()
+				string = "%s;%s;" % (currency, denom)
+				# Find line in text file and update quantity
+				mylist = []
+				with open('static/txt/database.txt', 'r') as myfile:
+					for line in myfile:
+						if line.startswith(string):
+							line = "%s;%s;%s\n" % (currency, denom, entry.quantity)
+							print 'found old line'
+						mylist.append(line)
+				with open('static/txt/database.txt', 'w') as myfile:
+					for line in mylist:
+						myfile.write(line)
+			except Entry.DoesNotExist:
+				entry = Entry(country=currency, denomination=denom, quantity=quantity)
+				entry.save()
+				with open('static/txt/database.txt', 'r+a') as myfile:
+					last = myfile.readlines()[-1]
+					# Check if the file ended in a newline
+					string = '' if '\n' in last else '\n'
+					myfile.write("%s%s;%s;%s\n" % (string, currency, denom, quantity))
+			return HttpResponse('success')
+	return HttpResponse('failure')
+
+def validates(entry):
+	"""
+		Returns whether the entry has a valid currency, denomination, and quantity
+	"""
+	try:
+		currency = entry['currency']
+		denom = int(entry['denomination'])
+		quantity = int(entry['quantity'])
+		return currency and denom and quantity
+	except:
+		return False
+
+def rawText():
+	with open('static/txt/database.txt', 'r') as myfile:
+		return myfile.read()
+
+def allEntries(request):
+	obj = {}
+	obj['text'] = rawText()
+	return HttpResponse(json.dumps(obj), content_type="application/json")
 
 # from django.shortcuts import render_to_response
 # from django.template import RequestContext
