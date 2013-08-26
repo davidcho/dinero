@@ -35,6 +35,11 @@
                 function ViewModel() {
                     var self = this;
                     self.entries = ko.observableArray([]);
+                    self.entries.subscribe(function() {
+                        // self.filteredEntries(self.entries());
+                        self.filter();
+                    });
+                    self.filteredEntries = ko.observableArray([]);
 
                     self.addOne = function(value) {
                         return value + 1;
@@ -44,7 +49,7 @@
                         return str.replace(/\w\S*/g, function(txt) {
                             return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
                         });
-                    }
+                    };
 
                     self.newCurrency = ko.observable('');
                     self.newDenomination = ko.observable('');
@@ -141,10 +146,6 @@
                         });
                     };
 
-                    self.rawtext.subscribe(function() {
-                        alert('hi');
-                    });
-
                     self.update = function() {
                         $.getJSON("/getEntries", function(allData) {
                             var mappedEntries = $.map(allData, function(data) {
@@ -152,6 +153,30 @@
                             });
                             self.entries(mappedEntries);
                         });
+                    };
+
+                    self.query = ko.observable("Search...");
+                    self.query.subscribe(function() {
+                        self.filter();
+                    });
+
+                    self.filter = function() {
+                        var query = self.query().toLowerCase();
+                        if (query != 'search...' && query != '') {
+                            self.filteredEntries([]);
+                            var found = false;
+                            for (var i=0; i<self.entries().length; i++) {
+                                if (self.entries()[i].currency().toLowerCase().indexOf(query) >= 0) {
+                                    self.filteredEntries.push(self.entries()[i]);
+                                }
+                            }
+                        } else {
+                            self.filteredEntries(self.entries());
+                        }
+                    };
+
+                    self.deleteRow = function() {
+                        return false;
                     };
                 }
 
@@ -169,11 +194,10 @@
             
             <div id="wrap">
                 <div id="main" class="container">
-                    <div id="result"></div>
                     <div id="search-box">
-                        <form id="search-form" action="/search" method="get">
-                            <input type="text" id="s" name="q" value="Search..." onfocus='if (this.value == "Search...") {this.value = ""}' onblur='if (this.value == "") {this.value = "Search...";}'/>
-                            <input type="image" src="/static/images/blank.gif" id="sbutton" />
+                        <form id="search-form">
+                            <input type="text" id="s" value="Search..." onfocus='if (this.value == "Search...") {this.value = ""}' onblur='if (this.value == "") {this.value = "Search...";}' data-bind="value: query, valueUpdate: 'keyup'">
+                            <input type="image" src="/static/images/blank.gif" id="sbutton" onclick="return false;">
                         </form>
                     </div>
 
@@ -193,15 +217,15 @@
                                 </thead>
                             </table>
                             <table class="zebra">
-                                <tbody data-bind="foreach: entries">
-                                     <tr class="rows" ><!-- data-bind="hoverToggle: 'hover'" -->
+                                <tbody data-bind="foreach: filteredEntries">
+                                     <tr class="rows"><!-- data-bind="hoverToggle: 'hover'" -->
                                         <td>
                                             <!-- <div id="number"> -->
                                                 <span data-bind="text: $root.addOne($index())"></span>
                                             <!-- </div> -->
-                                            <!-- <div id="delete" style="display: none">
-                                                <button type="button" class="close">&times;</button>
-                                            </div> -->
+                                            <!-- <div id="delete" style="display: none"> -->
+                                                <!-- <button type="button" class="close">&times;</button> -->
+                                            <!-- </div> -->
                                         </td>
                                         <td><span data-bind="text: currency"></span></td>
                                         <td><span data-bind="text: denomination"></span></td>
@@ -212,19 +236,29 @@
                         </div>
                     </div>
 
-                    <div id="inputs">
+                    <div id="inputs"  
+                    {% if request.user.is_authenticated %} style="width:722px" {% endif %}>
+                        {% if request.user.is_authenticated %}
                         <div id="group1">
-                            <input type="text" data-bind="value: newCurrency, valueUpdate: 'keyup'" id="currency" class="form-control input-small" placeholder="Currency" name="country" {%if errors.country%}value="Invalid currency"{%endif%}>
+                            <input type="text" data-bind="value: newCurrency, valueUpdate: 'keyup'" id="currency" class="form-control input-small" placeholder="Currency" onfocus='if (this.placeholder == "Currency") {this.placeholder = ""}' onblur='if (this.placeholder == "") {this.placeholder = "Currency";}' name="country" {%if errors.country%}value="Invalid currency"{%endif%}>
                         </div>
                         <div id="group2">
-                            <input type="text" data-bind="value: newDenomination, valueUpdate: 'keyup'" id="denom" class="form-control input-small" placeholder="Denomination" name="denomination" {%if errors.country%}value="Invalid currency"{%endif%}>
+                            <input type="text" data-bind="value: newDenomination, valueUpdate: 'keyup'" id="denom" class="form-control input-small" placeholder="Denomination" onfocus='if (this.placeholder == "Denomination") {this.placeholder = ""}' onblur='if (this.placeholder == "") {this.placeholder = "Denomination";}' name="denomination" {%if errors.country%}value="Invalid currency"{%endif%}>
                         </div>
                         <div id="group3">
-                            <input type="text" data-bind="value: newQuantity, valueUpdate: 'keyup'" id="quantity" class="form-control input-small" placeholder="Quantity" name="quantity" {%if errors.country%}value="Invalid currency"{%endif%}>
+                            <input type="text" data-bind="value: newQuantity, valueUpdate: 'keyup'" id="quantity" class="form-control input-small" placeholder="Quantity" onfocus='if (this.placeholder == "Quantity") {this.placeholder = ""}' onblur='if (this.placeholder == "") {this.placeholder = "Quantity";}' name="quantity" {%if errors.country%}value="Invalid currency"{%endif%}>
                         </div>
                         <button class="btn btn-info" id="add" data-bind="click: addEntry, enable: validated">+</button>
+                        {% else %}
+                        <form class="form-inline" method="post">{% csrf_token %}
+                            <input type="text" class="form-control input-small" placeholder="Username" onfocus='if (this.placeholder == "Username") {this.placeholder = ""}' onblur='if (this.placeholder == "") {this.placeholder = "Username";}' name="username">
+                            <input type="password" class="form-control input-small" placeholder="Password" onfocus='if (this.placeholder == "Password") {this.placeholder = ""}' onblur='if (this.placeholder == "") {this.placeholder = "Password";}' name="password">
+                            <button type="submit" class="btn btn-info" id="login" name="log-in">Log In</button>
+                        </form>
+                        {% endif %}
                     </div>
 
+                    {% if request.user.is_authenticated %}
                     <div id="edit">
                         <a data-toggle="modal" href="#edit-modal" class="btn btn-default btn-small" data-bind="click: getRawtext">edit raw file</a>
                         <div class="modal fade" id="edit-modal">
@@ -247,11 +281,15 @@
                             </div>
                         </div>
                     </div>
+                    {% endif %}
                 </div>
             </div>
 
             <div id="footer">
                 <p>Designed and built by David Cho</p>
+                {% if request.user.is_authenticated %}
+                <a href="/logout/">Log out</a>
+                {% endif %}
             </div>
 
             <script>ko.applyBindings(new ViewModel());</script>

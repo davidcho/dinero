@@ -20,4 +20,8 @@
 9. Mutate the object in the observablearray DONE
 10. add X to delete on frontend DONE
 11. show X on hover - [[need to learn custon binding]]
-12. grab raw file upon clicking button
+12. grab raw file upon clicking button DONE
+13. get info from raw file DONE
+14. make log in front end DONE
+15. placeholder dissapears onfocus DONE
+16. connect search to knockoutjs

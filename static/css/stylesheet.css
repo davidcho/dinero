@@ -121,9 +121,8 @@ form#search-form #sbutton {
   line-height: 50px;
   font-weight:bold;
   font-family:'Alegreya';
-  margin: 3px 0px 17px 0px;
+  margin: -9px 0px 7px 0px;
   text-align: center;
-
 }
 
 table.zebra {
@@ -138,6 +137,10 @@ table.zebra {
     border-top: 1px solid #555;
     padding: 10px;
     text-align: center;    
+}
+
+.zebra tr td {
+    border-bottom: 1px solid #555;
 }
 
 .zebra tr:nth-child(1) td {
@@ -220,7 +223,8 @@ tbody {
 div#inputs {
     margin: auto;
     margin-top: 20px;
-    width: 722px;
+    /*width: 722px;*/
+    width: 530px;
     height: 42px;
     border: 1px solid gray;
     background-color: rgba(0, 0, 0, 0.7);
@@ -241,13 +245,17 @@ input.form-control {
     position: relative;
     float: left;
 }
-button#add {
+button#add, button#login {
     margin: 5px;
     width: 35px;
     height: 30px;
     position: relative;
     float: left;
     padding: 3px;
+}
+
+button#login {
+    width: 70px;
 }
 
 /********************************

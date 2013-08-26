@@ -1,9 +1,12 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from entry.models import Entry
 import re
 import django.utils.simplejson as json
 import socket
+from django.contrib.auth import authenticate, login, logout
+
+
 
 def home(request):
 	"""
@@ -11,84 +14,21 @@ def home(request):
 		as well as the raw text file associated with it. May
 		also do some cleanup in the database and text file.
 	"""
-	rawtext = rawText()
-	if 'save-changes' in request.POST:
+	if 'log-in' in request.POST:
+		username = request.POST['username']
+		password = request.POST['password']
+		user = authenticate(username=username, password=password)
+		if user is not None and user.is_active:
+			login(request, user)
+	elif 'save-changes' in request.POST:
 		if request.POST.get('text', ''):
-
-			# # Contains new text
-			# new = {x[:-1] for x in request.POST['text'].split('\n')}
-			# # Contains old text
-			# old = {x for x in rawtext.split('\n')}
-
-			# for line in new:
-			# 	print 'new; %s' % line
-
-			# for line in old:
-			# 	print 'old; %s' % line	
-
-			# # Check what is in new but not in old - additions
-			# for line in new:
-			# 	if line not in old:
-			# 		regex = re.compile('(\D+);(\d+);(\d+)')
-			# 		result = regex.match(line)
-			# 		if result:
-			# 			try:
-			# 				country = result.group(1).title()
-			# 				denomination = int(result.group(2))
-			# 				quantity = int(result.group(3))
-			# 				entry = Entry.objects.get(country=country, denomination=denomination)
-			# 				entry.quantity += quantity
-			# 				entry.save()
-			# 			except Entry.DoesNotExist:
-			# 				entry = Entry(country=country, denomination=denomination, quantity=quantity)
-			# 				entry.save()
-			# 			except:
-			# 				pass
-
-			# # Check what is in old but not in new - deletions
-			# for line in old:
-			# 	if line not in new:
-			# 		# print 'deleting %s' % line
-			# 		regex = re.compile('(\D+);(\d+);(\d+)')
-			# 		result = regex.match(line)
-			# 		if result:
-			# 			try:
-			# 				country = result.group(1)
-			# 				denomination = int(result.group(2))
-			# 				quantity = int(result.group(3))
-			# 				entry = Entry.objects.get(country=country, denomination=denomination)
-			# 				entry.delete()
-			# 			except:
-			# 				pass
-
 			# Overwrite text file with new text
 			with open('static/txt/database.txt', 'w') as myfile:
 				myfile.write(request.POST.get('text', ''))
-			
-	# clearDatabase()
-	
-	parse()
-	organize()
-	return render(request, 'home.html')
-
-	# elif 'save-changes' in request.POST:
-	# 	# Should read the textfield info and determine what to add/change
-	# 	print 'saving changes now'
-	# 	if request.POST.get('text', ''):
-	# 		data = request.POST['text']
-	# 	else:
-	# 		print 'nothing'
-
-# def addEntry(currency, denomination, quantity, text=False):
-# 	try:
-# 		currency = currency.title()
-# 		denomination = int(denomination)
-# 		quantity = int(quantity)
-# 		Entry.objects.get(country=currency, denomination=denomination)
-# 	except Entry.DoesNotExist:
-# 		entry = Entry(country=currency, denomination=denomination, quantity=quantity)	
-# 	except:
-# 		pass
+			clearDatabase()
+			parse()
+			organize(True)
+	return render(request, 'home.html', {'request' : request})
 
 def parse():
 	"""
@@ -105,8 +45,6 @@ def parse():
 					denomination = int(result.group(2))
 					quantity = int(result.group(3))
 					entry = Entry.objects.get(country=country, denomination=denomination)
-					entry.quantity += quantity
-					entry.save()
 				except Entry.DoesNotExist:
 					entry = Entry(country=country, denomination=denomination, quantity=quantity)
 					entry.save()
@@ -121,29 +59,25 @@ def clearDatabase():
 	for entry in Entry.objects.all():
 		entry.delete()
 
-def organize():
+def organize(alphabetize=False):
 	"""
 		Removes duplicates from the text file 
 		and then sorts them alphabetically
 	"""
-	# myset = {}
-	# with open('static/txt/database.txt', 'r') as myfile:
-	# 	myset = {line for line in myfile}
-	# with open('static/txt/database.txt', 'w') as myfile:
-	# 	mylist = list(myset)
-	# 	mylist.sort()
-	# 	for line in mylist:
-	# 		myfile.write(line)
-	entries = Entry.objects.all().order_by('country', 'denomination')
-	for entry in entries:
-		entry.country = entry.country.title()
-		entry.save()
+	if alphabetize:
+		entries = Entry.objects.all().order_by('country', 'denomination')
+		for entry in entries:
+			entry.country = entry.country.title()
+			entry.save()
 	entries = Entry.objects.all().order_by('country', 'denomination')
 	with open('static/txt/database.txt', 'w') as myfile:
 		bufferstring = ''
 		for entry in entries:
 			bufferstring = '%s\n%s;%s;%s' % (bufferstring, entry.country, entry.denomination, entry.quantity)
-		myfile.write(bufferstring)
+		if (bufferstring.startswith('\n')):
+			myfile.write(bufferstring[1:])
+		else:	
+			myfile.write(bufferstring)
 
 def getEntries(request):
 	"""
@@ -197,6 +131,7 @@ def newEntry(request):
 					# Check if the file ended in a newline
 					string = '' if '\n' in last else '\n'
 					myfile.write("%s%s;%s;%s\n" % (string, currency, denom, quantity))
+			organize(False)
 			return HttpResponse('success')
 	return HttpResponse('failure')
 
@@ -213,27 +148,20 @@ def validates(entry):
 		return False
 
 def rawText():
+	"""
+		Returns the raw string version of the database
+	"""
 	with open('static/txt/database.txt', 'r') as myfile:
 		return myfile.read()
 
 def allEntries(request):
+	"""
+		Returns the json representation of the raw text file
+	"""
 	obj = {}
 	obj['text'] = rawText()
 	return HttpResponse(json.dumps(obj), content_type="application/json")
 
-# from django.shortcuts import render_to_response
-# from django.template import RequestContext
-# from django.utils import simplejson
-
-# def main(request):
-# 	return render_to_response('ajaxexample.html', context_instance=RequestContext(request))
- 
-# def ajax(request):
-# 	if request.POST.has_key('client_response'):
-# 		x = request.POST['client_response']                 
-# 		y = "hello %s!" % x                         
-# 		response_dict = {}                                         
-# 		response_dict.update({'server_response': y })                                                                  
-# 		return HttpResponse(simplejson.dumps(response_dict), mimetype='application/javascript')
-# 	else:
-# 		return render_to_response('ajaxexample.html', context_instance=RequestContext(request))
+def logout_view(request):
+	logout(request)
+	return redirect("/")	
